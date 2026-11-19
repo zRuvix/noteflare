@@ -1,0 +1,635 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@fontsource/be-vietnam-pro/400.css';
+@import '@fontsource/be-vietnam-pro/500.css';
+@import '@fontsource/be-vietnam-pro/600.css';
+@import '@fontsource-variable/jetbrains-mono';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Palette inspired by Cloudflare: its signature orange (#F6821F) and tangerine
+ * (#FBAD41) on warm neutral greys. Orange is bright, so filled orange surfaces
+ * carry dark ink (6.7:1) and orange text uses a deeper shade (--link, 4.75:1).
+ * Note colors are soft paper tints, each with its own dark variant.
+ */
+:root {
+  --background: #f7f6f4;
+  --foreground: #1c1b1a;
+  --surface: #ffffff;
+  --muted: #edebe8;
+  --muted-foreground: #6b6560;
+  --border: #e2dfdb;
+  --input: #d3cfca;
+  --ring: #f6821f;
+  --primary: #f6821f;
+  --primary-foreground: #1c1b1a;
+  --secondary: #edebe8;
+  --secondary-foreground: #1c1b1a;
+  --accent: #efece8;
+  --accent-foreground: #1c1b1a;
+  --destructive: #c42b1c;
+  --popover: #ffffff;
+  --popover-foreground: #1c1b1a;
+  /* Orange as text on light backgrounds */
+  --link: #b4500a;
+  --success: #2b8a5e;
+  /* Accent used on inverted surfaces (toasts are dark in light mode) */
+  --inverse-accent: #fbad41;
+
+  --note-default: var(--surface);
+  --note-sand: #fde9c8;
+  --note-sage: #dcead2;
+  --note-sky: #d5e5f1;
+  --note-lilac: #e5ddf0;
+  --note-rose: #f3dada;
+  --note-clay: #efdcc8;
+  --note-slate: #dfe3e7;
+}
+
+.dark {
+  --success: #4cc38a;
+  --background: #18181a;
+  --foreground: #edebe8;
+  --surface: #212124;
+  --muted: #2a2a2d;
+  --muted-foreground: #9a948e;
+  --border: #313135;
+  --input: #3e3e43;
+  --ring: #fbad41;
+  --primary: #f6821f;
+  --primary-foreground: #1c1b1a;
+  --secondary: #2a2a2d;
+  --secondary-foreground: #edebe8;
+  --accent: #2c2c30;
+  --accent-foreground: #edebe8;
+  --destructive: #f07167;
+  --popover: #232326;
+  --popover-foreground: #edebe8;
+  --link: #fbad41;
+  --inverse-accent: #b4500a;
+
+  --note-sand: #45351c;
+  --note-sage: #2b3828;
+  --note-sky: #233343;
+  --note-lilac: #342b42;
+  --note-rose: #42292c;
+  --note-clay: #423024;
+  --note-slate: #2b3136;
+}
+
+@theme inline {
+  --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-success: var(--success);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-link: var(--link);
+  --color-inverse-accent: var(--inverse-accent);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'ss01';
+  }
+  /* Anything you can click shows the pointer (Tailwind 4 no longer does this for buttons). */
+  button:not(:disabled),
+  a[href],
+  summary,
+  select,
+  label[for],
+  input[type='checkbox']:not(:disabled),
+  input[type='radio']:not(:disabled),
+  input[type='file'],
+  [role='button'],
+  [role='menuitem'],
+  [role='menuitemcheckbox'],
+  [role='menuitemradio'],
+  [role='tab'],
+  [role='option'],
+  [role='switch'] {
+    cursor: pointer;
+  }
+  :disabled,
+  [aria-disabled='true'],
+  [data-disabled] {
+    cursor: not-allowed;
+  }
+  :focus-visible {
+    outline-color: var(--ring);
+  }
+}
+
+/* Masonry grid with CSS columns */
+.masonry {
+  column-gap: 1rem;
+  column-width: 15rem;
+}
+.masonry > * {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+}
+/* Off-screen cards skip rendering once their real size is known (src/lib/offscreen.ts). */
+[data-note] {
+  contain-intrinsic-size: auto 12rem;
+}
+[data-note][data-sized] {
+  content-visibility: auto;
+}
+
+/* Markdown inside notes — compact enough for small cards */
+.md {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.md > * + * {
+  margin-top: 0.5em;
+}
+.md h1,
+.md h2,
+.md h3,
+.md h4 {
+  font-weight: 600;
+  line-height: 1.3;
+}
+.md h1 { font-size: 1.25em; }
+.md h2 { font-size: 1.125em; }
+.md h3,
+.md h4 { font-size: 1em; }
+.md a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.md ul,
+.md ol {
+  padding-left: 1.25em;
+}
+.md ul { list-style: disc; }
+.md ol { list-style: decimal; }
+.md li + li { margin-top: 0.15em; }
+.md li:has(> input[type='checkbox']),
+.md li:has(> p > input[type='checkbox']) {
+  list-style: none;
+  margin-left: -1.25em;
+}
+.md li:has(> input:checked) {
+  color: var(--muted-foreground);
+  text-decoration: line-through;
+}
+.md blockquote {
+  border-left: 3px solid color-mix(in oklab, var(--foreground) 22%, transparent);
+  padding-left: 0.75em;
+  color: var(--muted-foreground);
+}
+.md code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: color-mix(in oklab, var(--foreground) 8%, transparent);
+  border-radius: 4px;
+  padding: 0.1em 0.3em;
+}
+.md pre {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  background: color-mix(in oklab, var(--foreground) 7%, transparent);
+  border-radius: 6px;
+  padding: 0.6em 0.75em;
+  overflow-x: auto;
+}
+.md pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+/* Syntax colors for fenced code (TanStack Highlight, GitHub palette). */
+:root {
+  --th-token: inherit;
+  --th-attr: #0550ae;
+  --th-code-inline: #953800;
+  --th-command: #8250df;
+  --th-comment: #6e7781;
+  --th-deleted: #cf222e;
+  --th-function: #8250df;
+  --th-heading: #0550ae;
+  --th-inserted: #1a7f37;
+  --th-keyword: #cf222e;
+  --th-link: #0969da;
+  --th-literal: #0550ae;
+  --th-meta: #57606a;
+  --th-number: #0550ae;
+  --th-operator: #8250df;
+  --th-property: #0550ae;
+  --th-selector: #116329;
+  --th-string: #0a7f64;
+  --th-tag: #116329;
+  --th-type: #953800;
+  --th-variable: #953800;
+}
+.dark {
+  --th-attr: #79c0ff;
+  --th-code-inline: #ffa657;
+  --th-command: #d2a8ff;
+  --th-comment: #8b949e;
+  --th-deleted: #ff7b72;
+  --th-function: #d2a8ff;
+  --th-heading: #79c0ff;
+  --th-inserted: #7ee787;
+  --th-keyword: #ff7b72;
+  --th-link: #58a6ff;
+  --th-literal: #79c0ff;
+  --th-meta: #8b949e;
+  --th-number: #79c0ff;
+  --th-operator: #d2a8ff;
+  --th-property: #79c0ff;
+  --th-selector: #7ee787;
+  --th-string: #a5d6ff;
+  --th-tag: #7ee787;
+  --th-type: #ffa657;
+  --th-variable: #ffa657;
+}
+.md pre .th-attr { color: var(--th-attr); }
+.md pre .th-code-inline { color: var(--th-code-inline); }
+.md pre .th-command { color: var(--th-command); }
+.md pre .th-comment { color: var(--th-comment); font-style: italic; }
+.md pre .th-deleted { color: var(--th-deleted); }
+.md pre .th-function { color: var(--th-function); }
+.md pre .th-heading { color: var(--th-heading); font-weight: 600; }
+.md pre .th-inserted { color: var(--th-inserted); }
+.md pre .th-keyword { color: var(--th-keyword); }
+.md pre .th-link { color: var(--th-link); }
+.md pre .th-literal { color: var(--th-literal); }
+.md pre .th-meta { color: var(--th-meta); }
+.md pre .th-number { color: var(--th-number); }
+.md pre .th-operator { color: var(--th-operator); }
+.md pre .th-property { color: var(--th-property); }
+.md pre .th-selector { color: var(--th-selector); }
+.md pre .th-string { color: var(--th-string); }
+.md pre .th-tag { color: var(--th-tag); }
+.md pre .th-type { color: var(--th-type); }
+.md pre .th-variable { color: var(--th-variable); }
+.md table {
+  border-collapse: collapse;
+  font-size: 0.875em;
+  display: block;
+  overflow-x: auto;
+}
+.md th,
+.md td {
+  border: 1px solid color-mix(in oklab, var(--foreground) 15%, transparent);
+  padding: 0.25em 0.5em;
+  text-align: left;
+}
+.md hr {
+  border: 0;
+  border-top: 1px solid color-mix(in oklab, var(--foreground) 15%, transparent);
+}
+.md img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===================================================================
+ * Motion — one signature moment (decrypt on unlock); everything else only
+ * responds to what the user does. All of it turns off with prefers-reduced-motion.
+ * =================================================================== */
+
+:root {
+  --flare: #f6821f;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.dark {
+  --flare: #fbad41;
+}
+
+@theme inline {
+  --color-flare: var(--flare);
+}
+
+/* Decrypt reveal: a flare line sweeps the ciphertext layer away, uncovering the real note */
+.reveal-cipher,
+.reveal-content,
+.reveal-scan {
+  animation-duration: 950ms;
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: both;
+  animation-delay: calc(var(--i, 0) * 70ms + 120ms);
+}
+.reveal-cipher {
+  position: absolute;
+  inset: 0;
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.45;
+  word-break: break-all;
+  color: color-mix(in oklab, var(--foreground) 38%, transparent);
+  pointer-events: none;
+  animation-name: veil;
+}
+.reveal-content {
+  animation-name: unveil;
+}
+.reveal-scan {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--flare) 30%, #fff6 50%, var(--flare) 70%, transparent);
+  box-shadow: 0 0 14px 2px color-mix(in oklab, var(--flare) 55%, transparent);
+  pointer-events: none;
+  animation-name: scan;
+}
+@keyframes veil {
+  from { clip-path: inset(0 0 0 0); }
+  to { clip-path: inset(100% 0 0 0); }
+}
+@keyframes unveil {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes scan {
+  0% { top: 0; opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* View Transitions: cards slide when pinned/archived and grow into the editor */
+::view-transition-group(*) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 260ms;
+}
+::view-transition-old(*):only-child {
+  animation: vt-out 220ms ease-in both;
+}
+::view-transition-new(*):only-child {
+  animation: vt-in 320ms var(--ease-out) both;
+}
+@keyframes vt-out {
+  to { opacity: 0; transform: scale(0.92); filter: blur(4px); }
+}
+@keyframes vt-in {
+  from { opacity: 0; transform: scale(0.94); filter: blur(4px); }
+}
+
+/* A card is named only while `transition()` marks it (on or near the screen): each name is a snapshot. */
+[data-note][data-vt] {
+  view-transition-name: var(--vt);
+}
+
+/* Theme switch (themeTransition): one snapshot, revealed in a circle */
+.theme-vt * {
+  view-transition-name: none !important;
+}
+.theme-vt::view-transition-old(root),
+.theme-vt::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Placeholder cards while notes decrypt */
+.skeleton {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  background: linear-gradient(100deg, var(--surface) 30%, color-mix(in oklab, var(--surface), var(--foreground) 5%) 50%, var(--surface) 70%);
+  background-size: 250% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+.skeleton-flat {
+  margin-bottom: 0;
+}
+@keyframes shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -150% 0; }
+}
+
+/* Custom checkbox: rounded box, check mark springs in */
+.md input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-grid;
+  place-content: center;
+  width: 1.05em;
+  height: 1.05em;
+  margin: 0 0.5em 0 0;
+  vertical-align: -0.15em;
+  border: 1.6px solid color-mix(in oklab, var(--foreground) 45%, transparent);
+  border-radius: 0.3em;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 160ms, border-color 160ms, transform 160ms var(--ease-out);
+}
+.md input[type='checkbox']:not(:disabled):active {
+  transform: scale(0.85);
+}
+.md input[type='checkbox']:checked:not(:disabled) {
+  animation: tick-pop 360ms var(--ease-spring);
+}
+@keyframes tick-pop {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 45%, transparent); }
+  100% { box-shadow: 0 0 0 0.45em transparent; }
+}
+.md input[type='checkbox']::after {
+  content: '';
+  width: 0.62em;
+  height: 0.62em;
+  background: var(--primary-foreground);
+  clip-path: polygon(14% 52%, 0 66%, 38% 100%, 100% 22%, 86% 8%, 38% 72%);
+  transform: scale(0);
+  transition: transform 220ms var(--ease-spring);
+}
+.md input[type='checkbox']:checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.md input[type='checkbox']:checked::after {
+  transform: scale(1);
+}
+.md input[type='checkbox']:disabled {
+  cursor: default;
+}
+.md input[type='checkbox']:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.md li {
+  transition: color 200ms;
+}
+.md li:has(> input:checked) {
+  text-decoration-color: color-mix(in oklab, var(--foreground) 45%, transparent);
+}
+
+/* Subtle paper grain on note cards */
+.paper {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Spark shown when a note has just been encrypted and saved */
+@keyframes glint {
+  0% { transform: scale(0.4) rotate(0deg); opacity: 0; }
+  35% { transform: scale(1.15) rotate(45deg); opacity: 1; }
+  100% { transform: scale(1) rotate(90deg); opacity: 1; }
+}
+.glint {
+  animation: glint 520ms var(--ease-spring) both;
+}
+@keyframes breathe {
+  50% { opacity: 0.35; }
+}
+.breathe {
+  animation: breathe 1.1s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-cipher,
+  .reveal-scan {
+    display: none;
+  }
+  .reveal-content {
+    animation: none;
+  }
+}
+
+/* Import drop target: the folder icon bobs while files hover over the page */
+@keyframes bob {
+  50% { transform: translateY(-6px); }
+}
+.dropzone-icon {
+  animation: bob 1.2s var(--ease-out) infinite;
+}
+.dropzone {
+  box-shadow: 0 0 0 8px color-mix(in oklab, var(--flare) 12%, transparent), 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dropzone-icon { animation: none; }
+}
+
+/*
+ * View-transition layering. Each named element is its own group and groups paint
+ * in DOM order, ignoring the page's z-index — so order them explicitly:
+ * cards < header < active chip < new-note button < editor backdrop < editor.
+ * (When a new note grows out of the button, the group takes the editor's class.)
+ */
+::view-transition-group(*.card) { z-index: 1; }
+::view-transition-group(site-header) { z-index: 10; }
+::view-transition-group(chip-active) { z-index: 11; }
+::view-transition-group(*.fab) { z-index: 15; }
+::view-transition-group(editor-backdrop) { z-index: 20; }
+::view-transition-group(*.editor) { z-index: 21; }
+
+/* The header and backdrop simply fade; no scale or blur. */
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation: none;
+}
+::view-transition-new(editor-backdrop):only-child {
+  animation: vt-fade-in 300ms ease-out both;
+}
+::view-transition-old(editor-backdrop):only-child {
+  animation: vt-fade-out 240ms ease-in both;
+}
+@keyframes vt-fade-in { from { opacity: 0; } }
+@keyframes vt-fade-out { to { opacity: 0; } }
+
+/*
+ * Card ⇄ editor morph: the frame grows while content stays at its real size,
+ * anchored top-left and clipped — no stretched, ghosted text.
+ */
+::view-transition-group(*.editor) {
+  overflow: clip;
+  border-radius: 1rem;
+}
+::view-transition-old(*.editor),
+::view-transition-new(*.editor) {
+  height: 100%;
+  object-fit: none;
+  object-position: left top;
+}
+::view-transition-old(*.editor) {
+  animation: vt-fade-out 160ms ease-out both;
+}
+::view-transition-new(*.editor) {
+  animation: vt-fade-in 240ms ease-out both;
+}
+@media (max-width: 639px) {
+  ::view-transition-group(*.editor) { border-radius: 0; }
+}
+
+/* Release notes in the About dialog: section headings ("Added", "Fixed") stay small */
+.changelog h3 {
+  margin-top: 0.9em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.changelog h3:first-child {
+  margin-top: 0;
+}
+
+/* ===================================================================
+ * Touch devices
+ * =================================================================== */
+
+/* iOS zooms into any field with text under 16px when it gets focus. Unlayered, so it beats utilities. */
+@media (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  textarea,
+  select {
+    font-size: max(16px, 1em);
+  }
+}
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+/* No double-tap-to-zoom delay on controls. */
+a,
+button,
+input,
+label,
+select,
+textarea,
+[role='button'] {
+  touch-action: manipulation;
+}

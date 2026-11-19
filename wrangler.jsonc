@@ -1,0 +1,62 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "noteflare",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-30",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Served at noteflare.<your-subdomain>.workers.dev. Per-version preview URLs are off:
+  // they are extra hostnames your Access application would not cover.
+  "workers_dev": true,
+  "preview_urls": false,
+
+  // The React SPA builds into ./dist; the Worker runs first only for /api/*
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/s/*"]
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "noteflare",
+      // No database_id needed: the first `wrangler deploy` creates the database
+      // and writes its id here (Wrangler ≥ 4.45, automatic resource provisioning).
+      "migrations_dir": "migrations","database_id": "96665ea4-c43e-4ede-93f7-f67494b3a013"
+    }
+  ],
+
+  // Optional: encrypted attachments. Uncomment to let notes carry images and files; the
+  // first deploy creates the bucket. R2 must be enabled on your Cloudflare account
+  // (free for the first 10 GB, but it asks for a payment method), which is why it is off by default.
+  // "r2_buckets": [{ "binding": "ATTACHMENTS", "bucket_name": "noteflare-attachments" }],
+
+  // Live sync: tells your other open devices to pull right after a change (only note ids and versions).
+  "durable_objects": { "bindings": [{ "name": "LIVE", "class_name": "LiveSync" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["LiveSync"] }],
+
+  // Per-IP limits against guessing: requests with an API token (60 a minute) and the
+  // first-run setup (10 a minute). Free; remove a block to turn that limit off.
+  "ratelimits": [
+    { "name": "TOKEN_LIMITER", "namespace_id": "1001", "simple": { "limit": 60, "period": 60 } },
+    { "name": "SETUP_LIMITER", "namespace_id": "1002", "simple": { "limit": 10, "period": 60 } }
+  ],
+
+  "vars": {
+    // Leave both as "todo": NoteFlare sets up Cloudflare Access itself on first open and keeps
+    // the values in D1. To set them by hand instead: your team address
+    // (https://your-team.cloudflareaccess.com) and the Access application's AUD tag.
+    "ACCESS_TEAM_DOMAIN": "todo",
+    "ACCESS_AUD": "todo",
+    // Optional second lock on top of the Access policy: emails or "@domain", comma-separated.
+    "ALLOWED_EMAILS": "bhaskargg69@gmail.com",
+    // Where to look for new releases ("owner/repo"). Use your fork, or "off" to disable.
+    "UPDATE_CHECK_REPO": "homielab/noteflare"
+  },
+
+  // Empty the trash: permanently delete notes trashed more than 30 days ago
+  "triggers": { "crons": ["17 3 * * *"] },
+
+  "observability": { "enabled": true }
+}

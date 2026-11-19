@@ -1,0 +1,9 @@
+{
+  "activeNotes": [
+    { "id": "a1", "content": "# Groceries\r\nMilk\r\nEggs", "creationDate": "2024-01-01T10:00:00.000Z", "lastModified": "2024-01-02T10:00:00.000Z", "tags": ["home", "food"], "systemTags": ["pinned"] },
+    { "id": "a2", "content": "Idea\n\nBuild a thing", "creationDate": "2024-02-01T10:00:00.000Z", "lastModified": "2024-02-02T10:00:00.000Z" }
+  ],
+  "trashedNotes": [
+    { "id": "t1", "content": "Old\nthrown away", "creationDate": "2023-01-01T10:00:00.000Z", "lastModified": "2023-01-01T10:00:00.000Z" }
+  ]
+}

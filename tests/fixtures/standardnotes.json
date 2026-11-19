@@ -1,0 +1,16 @@
+{
+  "version": "004",
+  "items": [
+    { "uuid": "n1", "content_type": "Note", "created_at": "2024-01-01T10:00:00.000Z", "updated_at": "2024-01-02T10:00:00.000Z",
+      "content": { "title": "Pinned one", "text": "First\r\nbody", "appData": { "org.standardnotes.sn": { "pinned": true, "clientUpdatedAt": "2024-01-03T10:00:00.000Z" } } } },
+    { "uuid": "n2", "content_type": "Note", "created_at": "2024-02-01T10:00:00.000Z", "updated_at": "2024-02-02T10:00:00.000Z",
+      "content": { "title": "Archived one", "text": "Second", "appData": { "org.standardnotes.sn": { "archived": true, "pinned": true } } } },
+    { "uuid": "n3", "content_type": "Note", "created_at": "2024-03-01T10:00:00.000Z", "updated_at": "2024-03-02T10:00:00.000Z",
+      "content": { "title": "In trash", "text": "gone", "trashed": true } },
+    { "uuid": "n4", "content_type": "Note", "created_at": "2024-04-01T10:00:00.000Z", "updated_at": "2024-04-02T10:00:00.000Z",
+      "content": "004:encrypted-payload-not-readable" },
+    { "uuid": "g1", "content_type": "Tag", "created_at": "2024-01-01T10:00:00.000Z", "updated_at": "2024-01-01T10:00:00.000Z",
+      "content": { "title": "work", "references": [{ "uuid": "n1", "content_type": "Note" }] } },
+    { "uuid": "d1", "content_type": "Note", "deleted": true, "content": { "title": "Deleted", "text": "x" } }
+  ]
+}
